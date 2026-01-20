@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs').promises;
+const path = require('path');
 const app = express();
 
 // Middleware
@@ -7,7 +9,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Dane produktów
+// Ścieżki do plików JSON
+const DATA_DIR = path.join(__dirname, 'data');
+const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
+const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+
+// Dane początkowe
 let products = [
   { 
     id: 1, 
@@ -91,11 +98,72 @@ let products = [
   }
 ];
 
-// Przechowywanie zamówień
 let orders = [];
 let orderIdCounter = 1;
 
-// Routes - Produkty
+// ======== FUNKCJE POMOCNICZE ========
+
+// Stwórz katalog data jeśli nie istnieje
+async function initDataDir() {
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    console.log('📁 Katalog data utworzony/sprawdzony');
+  } catch (err) {
+    console.error('Błąd tworzenia katalogu:', err);
+  }
+}
+
+// Zapisz produkty do pliku JSON
+async function saveProducts() {
+  try {
+    await fs.writeFile(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf8');
+    console.log('💾 Produkty zapisane do products.json');
+  } catch (err) {
+    console.error('Błąd zapisu produktów:', err);
+  }
+}
+
+// Wczytaj produkty z pliku JSON
+async function loadProducts() {
+  try {
+    const data = await fs.readFile(PRODUCTS_FILE, 'utf8');
+    products = JSON.parse(data);
+    console.log('📖 Produkty wczytane z products.json');
+  } catch (err) {
+    console.log('⚠️ Brak pliku products.json, używam domyślnych danych');
+    await saveProducts(); // Zapisz domyślne dane
+  }
+}
+
+// Zapisz zamówienia do pliku JSON
+async function saveOrders() {
+  try {
+    await fs.writeFile(ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf8');
+    console.log('💾 Zamówienia zapisane do orders.json');
+  } catch (err) {
+    console.error('Błąd zapisu zamówień:', err);
+  }
+}
+
+// Wczytaj zamówienia z pliku JSON
+async function loadOrders() {
+  try {
+    const data = await fs.readFile(ORDERS_FILE, 'utf8');
+    const loadedOrders = JSON.parse(data);
+    orders = loadedOrders;
+    // Ustaw orderIdCounter na najwyższe ID + 1
+    if (orders.length > 0) {
+      orderIdCounter = Math.max(...orders.map(o => o.id)) + 1;
+    }
+    console.log('📖 Zamówienia wczytane z orders.json');
+  } catch (err) {
+    console.log('⚠️ Brak pliku orders.json, tworzę nowy');
+    await saveOrders();
+  }
+}
+
+// ======== ROUTES - PRODUKTY ========
+
 app.get('/api/products', (req, res) => {
   res.json({ success: true, products });
 });
@@ -108,8 +176,9 @@ app.get('/api/products/:id', (req, res) => {
   res.json({ success: true, product });
 });
 
-// Routes - Zamówienia
-app.post('/api/orders', (req, res) => {
+// ======== ROUTES - ZAMÓWIENIA ========
+
+app.post('/api/orders', async (req, res) => {
   const { customerName, email, phone, items, totalPrice } = req.body;
   
   // Walidacja
@@ -123,10 +192,16 @@ app.post('/api/orders', (req, res) => {
   // Sprawdź dostępność produktów
   for (let item of items) {
     const product = products.find(p => p.id === item.productId);
-    if (!product || product.stock < item.quantity) {
+    if (!product) {
       return res.status(400).json({ 
         success: false, 
-        message: `Niewystarczająca ilość produktu: ${product?.name || 'nieznany'}` 
+        message: `Produkt nie znaleziony: ID ${item.productId}` 
+      });
+    }
+    if (product.stock < item.quantity) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Niewystarczająca ilość produktu: ${product.name}` 
       });
     }
   }
@@ -136,7 +211,7 @@ app.post('/api/orders', (req, res) => {
     id: orderIdCounter++,
     customerName,
     email,
-    phone,
+    phone: phone || '',
     items,
     totalPrice,
     status: 'pending',
@@ -152,6 +227,10 @@ app.post('/api/orders', (req, res) => {
   });
 
   orders.push(newOrder);
+  
+  // ZAPISZ DO PLIKÓW JSON
+  await saveProducts();
+  await saveOrders();
   
   res.status(201).json({ 
     success: true, 
@@ -172,41 +251,50 @@ app.get('/api/orders/:id', (req, res) => {
   res.json({ success: true, order });
 });
 
-// Routes - Koszyk
-app.post('/api/cart/add', (req, res) => {
-  const { productId, quantity } = req.body;
-  const product = products.find(p => p.id === productId);
-  
-  if (!product) {
-    return res.status(404).json({ success: false, message: 'Produkt nie znaleziony' });
-  }
+// ======== ROUTES - KOSZYK ========
 
-  if (product.stock < quantity) {
+app.post('/api/cart/validate', (req, res) => {
+  const { items } = req.body;
+  
+  const validationErrors = [];
+  
+  items.forEach(item => {
+    const product = products.find(p => p.id === item.productId);
+    if (!product) {
+      validationErrors.push(`Produkt ${item.productId} nie istnieje`);
+    } else if (product.stock < item.quantity) {
+      validationErrors.push(`${product.name}: dostępne tylko ${product.stock} ${product.unit}`);
+    }
+  });
+  
+  if (validationErrors.length > 0) {
     return res.status(400).json({ 
       success: false, 
-      message: 'Niewystarczająca ilość w magazynie' 
+      errors: validationErrors 
     });
   }
+  
+  res.json({ success: true, message: 'Koszyk poprawny' });
+});
 
+// ======== HEALTH CHECK ========
+
+app.get('/api/health', (req, res) => {
   res.json({ 
-    success: true, 
-    message: 'Produkt dodany do koszyka',
-    product,
-    quantity
+    status: 'OK', 
+    message: 'Serwer działa poprawnie',
+    timestamp: new Date().toISOString()
   });
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Serwer działa poprawnie' });
-});
+// ======== 404 HANDLER ========
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Endpoint nie znaleziony' });
 });
 
-// Error handler
+// ======== ERROR HANDLER ========
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -215,9 +303,21 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start serwera
+// ======== START SERWERA ========
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Serwer działa na porcie ${PORT}`);
-  console.log(`🍌 API dostępne pod: http://localhost:${PORT}/api`);
-});
+
+async function startServer() {
+  await initDataDir();
+  await loadProducts();
+  await loadOrders();
+  
+  app.listen(PORT, () => {
+    console.log(`🚀 Serwer działa na porcie ${PORT}`);
+    console.log(`🌍 API dostępne pod: http://localhost:${PORT}/api`);
+    console.log(`📦 Produktów w bazie: ${products.length}`);
+    console.log(`📋 Zamówień w bazie: ${orders.length}`);
+  });
+}
+
+startServer();

@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "Banany",
+    "price": 5.99,
+    "description": "Świeże banany z Ugandy i Tanzanii",
+    "unit": "kg",
+    "stock": 99,
+    "image": "🍌",
+    "origin": "Uganda, Tanzania"
+  },
+  {
+    "id": 2,
+    "name": "Kokosy",
+    "price": 8.99,
+    "description": "Soczyste kokosy z wybrzeża Kenii",
+    "unit": "szt",
+    "stock": 50,
+    "image": "🥥",
+    "origin": "Kenia"
+  },
+  {
+    "id": 3,
+    "name": "Mango",
+    "price": 12.99,
+    "description": "Słodkie mango z Senegalu",
+    "unit": "kg",
+    "stock": 75,
+    "image": "🥭",
+    "origin": "Senegal"
+  },
+  {
+    "id": 4,
+    "name": "Papaja",
+    "price": 9.99,
+    "description": "Dojrzałe papaje z Ghany",
+    "unit": "kg",
+    "stock": 60,
+    "image": "🍈",
+    "origin": "Ghana"
+  },
+  {
+    "id": 5,
+    "name": "Ananas",
+    "price": 7.99,
+    "description": "Soczyste ananasy z Wybrzeża Kości Słoniowej",
+    "unit": "szt",
+    "stock": 80,
+    "image": "🍍",
+    "origin": "Wybrzeże Kości Słoniowej"
+  },
+  {
+    "id": 6,
+    "name": "Arbuz",
+    "price": 4.99,
+    "description": "Słodkie arbuzy z Egiptu",
+    "unit": "kg",
+    "stock": 119,
+    "image": "🍉",
+    "origin": "Egipt"
+  },
+  {
+    "id": 7,
+    "name": "Marakuja",
+    "price": 15.99,
+    "description": "Egzotyczna marakuja z Rwandy",
+    "unit": "kg",
+    "stock": 40,
+    "image": "🫐",
+    "origin": "Rwanda"
+  },
+  {
+    "id": 8,
+    "name": "Awokado",
+    "price": 13.99,
+    "description": "Kremowe awokado z RPA",
+    "unit": "kg",
+    "stock": 90,
+    "image": "🥑",
+    "origin": "Republika Południowej Afryki"
+  }
+]
