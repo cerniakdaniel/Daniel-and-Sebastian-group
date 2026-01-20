@@ -23,5 +23,30 @@
     "totalPrice": 10.98,
     "status": "pending",
     "createdAt": "2026-01-20T13:51:49.453Z"
+  },
+  {
+    "id": 2,
+    "customerName": "Seba s",
+    "email": "seb@gmail.com",
+    "phone": "+370685868332",
+    "items": [
+      {
+        "productId": 5,
+        "name": "Ananas",
+        "quantity": 1,
+        "price": 7.99,
+        "unit": "szt"
+      },
+      {
+        "productId": 1,
+        "name": "Banany",
+        "quantity": 1,
+        "price": 5.99,
+        "unit": "kg"
+      }
+    ],
+    "totalPrice": 13.98,
+    "status": "pending",
+    "createdAt": "2026-01-20T15:05:13.378Z"
   }
 ]

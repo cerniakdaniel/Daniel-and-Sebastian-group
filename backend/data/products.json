@@ -5,7 +5,7 @@
     "price": 5.99,
     "description": "Świeże banany z Ugandy i Tanzanii",
     "unit": "kg",
-    "stock": 99,
+    "stock": 98,
     "image": "🍌",
     "origin": "Uganda, Tanzania"
   },
@@ -45,7 +45,7 @@
     "price": 7.99,
     "description": "Soczyste ananasy z Wybrzeża Kości Słoniowej",
     "unit": "szt",
-    "stock": 80,
+    "stock": 79,
     "image": "🍍",
     "origin": "Wybrzeże Kości Słoniowej"
   },
