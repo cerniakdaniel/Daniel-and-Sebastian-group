@@ -5,7 +5,7 @@
     "price": 5.99,
     "description": "Świeże banany z Ugandy i Tanzanii",
     "unit": "kg",
-    "stock": 98,
+    "stock": 92,
     "image": "🍌",
     "origin": "Uganda, Tanzania"
   },
@@ -15,7 +15,7 @@
     "price": 8.99,
     "description": "Soczyste kokosy z wybrzeża Kenii",
     "unit": "szt",
-    "stock": 50,
+    "stock": 49,
     "image": "🥥",
     "origin": "Kenia"
   },
@@ -25,7 +25,7 @@
     "price": 12.99,
     "description": "Słodkie mango z Senegalu",
     "unit": "kg",
-    "stock": 75,
+    "stock": 74,
     "image": "🥭",
     "origin": "Senegal"
   },
@@ -55,7 +55,7 @@
     "price": 4.99,
     "description": "Słodkie arbuzy z Egiptu",
     "unit": "kg",
-    "stock": 119,
+    "stock": 115,
     "image": "🍉",
     "origin": "Egipt"
   },

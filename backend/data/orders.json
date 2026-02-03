@@ -1,52 +1,38 @@
 [
   {
     "id": 1,
-    "customerName": "dn",
-    "email": "casd@gmail.com",
-    "phone": "1233",
+    "customerName": "xxxxx",
+    "email": "xxxxxx@xxx.xx",
+    "phone": "xxxx",
     "items": [
       {
         "productId": 1,
         "name": "Banany",
-        "quantity": 1,
+        "quantity": 5,
         "price": 5.99,
         "unit": "kg"
-      },
+      }
+    ],
+    "totalPrice": 29.950000000000003,
+    "status": "pending",
+    "createdAt": "2026-02-03T15:02:55.965Z"
+  },
+  {
+    "id": 2,
+    "customerName": "sss",
+    "email": "ss@sss.xom",
+    "phone": "ssss",
+    "items": [
       {
         "productId": 6,
         "name": "Arbuz",
-        "quantity": 1,
+        "quantity": 4,
         "price": 4.99,
         "unit": "kg"
       }
     ],
-    "totalPrice": 10.98,
+    "totalPrice": 19.96,
     "status": "pending",
-    "createdAt": "2026-01-20T13:51:49.453Z"
-  },
-  {
-    "id": 2,
-    "customerName": "Seba s",
-    "email": "seb@gmail.com",
-    "phone": "+370685868332",
-    "items": [
-      {
-        "productId": 5,
-        "name": "Ananas",
-        "quantity": 1,
-        "price": 7.99,
-        "unit": "szt"
-      },
-      {
-        "productId": 1,
-        "name": "Banany",
-        "quantity": 1,
-        "price": 5.99,
-        "unit": "kg"
-      }
-    ],
-    "totalPrice": 13.98,
-    "status": "pending",
-    "createdAt": "2026-01-20T15:05:13.378Z"
+    "createdAt": "2026-02-03T15:04:16.426Z"
   }
 ]
